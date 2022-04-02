@@ -19,9 +19,16 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used
     }
+
 
     /**
      * Manipulates the map once available.
@@ -32,9 +39,9 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         mMap.setMinZoomPreference(10.0f)
