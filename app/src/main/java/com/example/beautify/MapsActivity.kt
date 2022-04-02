@@ -1,4 +1,5 @@
 package com.example.beautify
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -8,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -30,9 +32,11 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+
         mMap.setMinZoomPreference(10.0f)
         mMap.setMaxZoomPreference(16.0f)
         // Add a marker in Sydney and move the camera
