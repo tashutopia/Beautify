@@ -19,7 +19,7 @@ class CameraIn : AppCompatActivity() {
         dispatchTakePictureIntent()
         val fab: View = findViewById(R.id.button_capture)
         fab.setOnClickListener {
-
+            finish()
         }
     }
 
