@@ -13,8 +13,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 
+import android.annotation.SuppressLint
+import android.location.Location
+import android.widget.Toast
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
+import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener
+//import com.google.maps.example.R
 
-internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
+    OnMyLocationClickListener, OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
@@ -53,18 +61,39 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.getUiSettings().setRotateGesturesEnabled(false);
+        mMap.uiSettings.isRotateGesturesEnabled = false;
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
         mMap.setMinZoomPreference(10.0f)
         mMap.setMaxZoomPreference(16.0f)
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
+        addMarker("GaTech",33.775778305161886, -84.39633864568813)
+
+        mMap.isMyLocationEnabled = true
+        mMap.setOnMyLocationButtonClickListener(this)
+        mMap.setOnMyLocationClickListener(this)
+    }
+    override fun onMyLocationClick(location: Location) {
+        Toast.makeText(this, "Current location:\n$location", Toast.LENGTH_LONG)
+            .show()
+    }
+
+    override fun onMyLocationButtonClick(): Boolean {
+        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT)
+            .show()
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false
+    }
+
+    fun addMarker(name:String, lat:Double,log:Double) {
+        val ref = LatLng(lat, log)
         mMap.addMarker(MarkerOptions()
-            .position(sydney)
-            .title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+            .position(ref)
+            .title("Marker in $name"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(ref))
     }
 }

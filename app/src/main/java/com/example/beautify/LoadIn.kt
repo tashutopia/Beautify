@@ -18,4 +18,5 @@ class LoadIn : AppCompatActivity() {
             startActivity(intent)
 
     }
+
 }

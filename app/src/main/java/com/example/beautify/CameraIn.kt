@@ -38,4 +38,6 @@ class CameraIn : AppCompatActivity() {
            imageView3.setImageBitmap(data.extras?.get("data") as Bitmap)
         }
     }
+
+
 }
