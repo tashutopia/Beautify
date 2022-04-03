@@ -13,7 +13,7 @@ class LoadIn : AppCompatActivity() {
         //Run mogo recovery code until success
 
         val intent = Intent(this, MapsActivity::class.java).apply {
-
+            finish()
         }
         startActivity(intent)
     }
