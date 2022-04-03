@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-
 class LoadIn : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +15,7 @@ class LoadIn : AppCompatActivity() {
             finish()
         }
 
+            startActivity(intent)
 
-        startActivity(intent)
     }
 }
