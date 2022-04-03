@@ -8,11 +8,18 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
@@ -22,15 +29,27 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.serialization.*
+import kotlinx.serialization.json.JsonArray
+import okhttp3.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     OnMyLocationClickListener, OnMapReadyCallback {
+
+    //private val client = OkHttpClient()
+
     private lateinit var mMap: GoogleMap
     var PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_maps)
+
+        run("https://tashnash.github.io/locations.json")
 
         val fab: View = findViewById(R.id.camButton)
         fab.setOnClickListener {
@@ -54,6 +73,56 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
     }
 
+    var ob : JSONArray = JSONArray()
+    fun run(url: String) {
+//        val textView = findViewById<TextView>(R.id.text)
+        Log.d("msg1", "method is being run")
+        // Instantiate the RequestQueue.
+        val queue = Volley.newRequestQueue(this)
+        Log.d("msg2", "method is being run 2")
+
+        // Request a string response from the provided URL.
+
+        val jsonArrayRequest = JsonArrayRequest(Request.Method.GET, url, null,
+            Response.Listener { response ->
+                ob = response
+                Log.d("msg3", "nooo" + response.toString())
+            },
+            Response.ErrorListener { error ->
+                Log.d("msg4", "yesss" + error.toString())
+            }
+        )
+        jsonArrayRequest.setRetryPolicy(
+            DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        )
+        queue.add(jsonArrayRequest)
+
+        for (i in 0 until (ob.length())) {
+            val loc = ob.getJSONObject(i)
+            Log.d("hi" + i, "${loc.get("locationName")} by ${loc.get("id")}")
+        }
+    }
+
+
+//    var tempString:String
+//    fun run(url: String) {
+//        val request = Request.Builder()
+//            .url(url)
+//            .build()
+//
+//        val temp = "hi";
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {}
+//            override fun onResponse(call: Call, response: Response) : String =
+//                println(response.body()?.string())
+//                return(response.body()?.string())
+//        })
+//        Log.d("plsWork", )
+//    }
 
     /**
      * Manipulates the map once available.
