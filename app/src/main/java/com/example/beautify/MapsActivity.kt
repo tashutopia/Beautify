@@ -30,6 +30,8 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
+
+
         val fab: View = findViewById(R.id.camButton)
         fab.setOnClickListener {
             val intent = Intent(this, CameraIn::class.java).apply {
@@ -66,6 +68,8 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         mMap = googleMap
         mMap.uiSettings.isRotateGesturesEnabled = false;
         mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+
+
 
         mMap.setMinZoomPreference(10.0f)
         mMap.setMaxZoomPreference(16.0f)
