@@ -40,13 +40,14 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     private var payable :Boolean = false
     private val circleList = mutableListOf<Circle>()
     private var nearCirc: Circle? = null
+    private val range : Double = 100.0
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-
+        mimic()
         val fab: View = findViewById(R.id.camButton)
         fab.setOnClickListener {
             val intent = Intent(this, CameraIn::class.java).apply {
@@ -98,6 +99,18 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         startLocationUpdates()
     }
 
+
+    private val structureList = mutableListOf<Structure>()
+    private fun mimic() {
+        structureList.add(Structure("fulmer dumpster",33.778525,-84.403702))
+        structureList.add(Structure("willage",33.779218,-84.405114))
+        structureList.add(Structure("brittain",33.772293,-84.391277))
+    }
+    private fun processMimic(){
+        for (circle in structureList) {
+            addArea(LatLng(circle.xCoord,circle.yCoord),circle.locationName)
+        }
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -122,7 +135,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         mMap.isMyLocationEnabled = true
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
-
+        processMimic()
 
     }
     private val locationRequest = LocationRequest.create()?.apply {
@@ -149,7 +162,12 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         val ref = LatLng(lat, log)
         mMap.addMarker(MarkerOptions()
             .position(ref)
-            .title("Marker in $name"))
+            .title("Marker in $name")
+            .alpha(0.75F)
+            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_green_leaf_vegan_icon_by_vexels))
+            .icon(BitmapDescriptorFactory.defaultMarker(110F))
+            //.flat(true)
+        )
         mMap.moveCamera(CameraUpdateFactory.newLatLng(ref))
     }
     private fun camReBound(latLng : LatLng) {
@@ -205,7 +223,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         val circle: Circle = mMap.addCircle(
             CircleOptions()
                 .center(latLng)
-                .radius(150.0)
+                .radius(range)
                 .strokeColor(Color.BLACK)
                 .fillColor(beau)
                 .clickable(true)
@@ -234,7 +252,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     private fun inRange(latLng1: LatLng,latLng: LatLng) : Boolean{
         val arr2 = FloatArray(1)
         Location.distanceBetween(latLng1.latitude,latLng1.longitude,latLng.latitude,latLng.longitude,arr2)
-        return arr2[0] <= 150
+        return arr2[0] <= range
     }
 
     private fun nearestCircle():Int {

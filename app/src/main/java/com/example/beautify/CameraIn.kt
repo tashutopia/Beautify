@@ -12,7 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 
 class CameraIn : AppCompatActivity() {
-    val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_IMAGE_CAPTURE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera_in)
@@ -20,6 +20,10 @@ class CameraIn : AppCompatActivity() {
         val fab: View = findViewById(R.id.button_capture)
         fab.setOnClickListener {
             finish()
+        }
+        val im = findViewById<ImageView>(R.id.imageView3)
+        im.setOnClickListener {
+            dispatchTakePictureIntent()
         }
     }
 
