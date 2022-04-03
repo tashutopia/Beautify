@@ -15,6 +15,8 @@ class LoadIn : AppCompatActivity() {
         val intent = Intent(this, MapsActivity::class.java).apply {
             finish()
         }
+
+
         startActivity(intent)
     }
 }

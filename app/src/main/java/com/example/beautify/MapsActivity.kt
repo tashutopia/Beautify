@@ -29,7 +29,13 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             startActivity(intent)
         }
+        val fab2: View = findViewById(R.id.shop_button)
+        fab2.setOnClickListener {
+            val intent = Intent(this, ShopActivity::class.java).apply {
 
+            }
+            startActivity(intent)
+        }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
