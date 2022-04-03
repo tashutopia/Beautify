@@ -2,13 +2,17 @@ package com.example.beautify
 
 //import com.google.maps.example.R
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
@@ -23,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     OnMyLocationClickListener, OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
-
+    var PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -46,6 +50,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        getLocationPermission()
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
     }
 
@@ -74,6 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         mMap.isMyLocationEnabled = true
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
+
 
         camReBound(LatLng(33.7700064482008, -84.38588745227676))
 
@@ -104,7 +110,21 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         val bounds = builder.include(latLng).build()
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,300,300, 30))
     }
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            var locationPermissionGranted = true
+        } else {
 
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+        }
+    }
 }
 
 
