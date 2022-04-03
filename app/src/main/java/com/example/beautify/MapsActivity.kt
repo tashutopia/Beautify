@@ -56,8 +56,11 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     lateinit var currPos: Location
     private var payable :Boolean = false
     private val circleList = mutableListOf<Circle>()
+     val nameList = mutableListOf<String>()
+    private val latList = mutableListOf<Double>()
+    private val logList = mutableListOf<Double>()
     private var nearCirc: Circle? = null
-    private val range : Double = 100.0
+    private val range : Double = 300.0
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("MissingPermission")
@@ -67,9 +70,9 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
 
         setContentView(R.layout.activity_maps)
 
-        run("https://tashnash.github.io/locations.json")
+        //run("https://tashnash.github.io/locations.json")
 
-        mimic()
+        //mimic()
         val fab: View = findViewById(R.id.camButton)
         fab.setOnClickListener {
             val intent = Intent(this, CameraIn::class.java).apply {
@@ -114,6 +117,7 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
                     nearCirc = circleList[nearestCircle()]
 
                     payable = inRange(LatLng(location.latitude, location.longitude), nearCirc!!.center)
+                    Log.d("pay","B $payable")
                 }
             }
 
@@ -121,38 +125,49 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         startLocationUpdates()
     }
 
-    var ob : JSONArray = JSONArray()
-    fun run(url: String) {
-//        val textView = findViewById<TextView>(R.id.text)
-        Log.d("msg1", "method is being run")
-        // Instantiate the RequestQueue.
+
+
+
+    private var ob : JSONArray = JSONArray()
+    private var back =""
+    private fun run(url: String) {
+
         val queue = Volley.newRequestQueue(this)
-        Log.d("msg2", "method is being run 2")
-
-        // Request a string response from the provided URL.
-
         val jsonArrayRequest = JsonArrayRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+            { response ->
                 ob = response
-                Log.d("msg3", "nooo" + response.toString())
+                Log.d("msg7", "Handling ${ob.toString()}")
+                back.plus(response.toString())
+                Log.d("msg3", response.toString())
+
+                for (i in 0 until ob.length()) {
+                    Log.d("msg5","Handling ${ob.toString()}")
+
+                    val loc = ob.getJSONObject(i)
+                    nameList.add("${loc.get("locationName")}")
+                    Log.d("msg5","Pushing ${nameList[i]}")
+                    latList.add(("${loc.get("xCoord")}").toDouble())
+                    Log.d("msg5","Pushing ${latList[i]}")
+                    logList.add(("${loc.get("yCoord")}").toDouble())
+                    Log.d("msg5","Pushing ${logList[i]}")
+                    if(i ==ob.length()-1) {
+                        mimic()
+                        processMimic()
+                    }
+                }
             },
-            Response.ErrorListener { error ->
-                Log.d("msg4", "yesss" + error.toString())
+            { error ->
+                Log.d("msg4", "yesss$error")
             }
         )
-        jsonArrayRequest.setRetryPolicy(
-            DefaultRetryPolicy(
-                30000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
+        jsonArrayRequest.retryPolicy = DefaultRetryPolicy(
+            30000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
+
         queue.add(jsonArrayRequest)
 
-        for (i in 0 until (ob.length())) {
-            val loc = ob.getJSONObject(i)
-            Log.d("hi" + i, "${loc.get("locationName")} by ${loc.get("id")}")
-        }
     }
 
 
@@ -174,11 +189,18 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
 
     private val structureList = mutableListOf<Structure>()
     private fun mimic() {
-        structureList.add(Structure("fulmer dumpster",33.778525,-84.403702))
-        structureList.add(Structure("willage",33.779218,-84.405114))
-        structureList.add(Structure("brittain",33.772293,-84.391277))
+        Log.d("msg10","Holding ${nameList}")
+        Log.d("msg10","Holding ${latList}")
+        Log.d("msg10","Holding ${logList}")
+        for(i in nameList.indices) {
+            structureList.add(Structure(nameList[i],latList[i],logList[i]))
+        }
+        //structureList.add(Structure("fulmer dumpster",33.778525,-84.403702))
+        //structureList.add(Structure("willage",33.779218,-84.405114))
+        //structureList.add(Structure("brittain",33.772293,-84.391277))
     }
     private fun processMimic(){
+        Log.d("msg10","Sending ${structureList}")
         for (circle in structureList) {
             addArea(LatLng(circle.xCoord,circle.yCoord),circle.locationName)
         }
@@ -207,7 +229,8 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         mMap.isMyLocationEnabled = true
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
-        processMimic()
+        //processMimic()
+        run("https://tashnash.github.io/locations.json")
 
     }
     private val locationRequest = LocationRequest.create()?.apply {
@@ -330,14 +353,12 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
     private fun nearestCircle():Int {
         var mindex = 0
         var mistance = 1000000
-        var i = 0
-        for (circle in circleList) {
+        for ((i, circle) in circleList.withIndex()) {
 
             var distance = checkDistTo(LatLng(currPos.latitude,currPos.longitude),circle.center)
             if(distance < mistance) {
                 mindex =  i
             }
-            i++
         }
 
         return mindex
