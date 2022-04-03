@@ -1,7 +1,9 @@
 package com.example.beautify
-import android.annotation.SuppressLint
+
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -9,7 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-
+import com.google.android.material.snackbar.Snackbar
 
 
 internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -20,7 +22,13 @@ internal class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
+        val fab: View = findViewById(R.id.camButton)
+        fab.setOnClickListener {
+            val intent = Intent(this, CameraIn::class.java).apply {
 
+            }
+            startActivity(intent)
+        }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
