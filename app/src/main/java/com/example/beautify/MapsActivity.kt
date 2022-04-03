@@ -3,18 +3,20 @@ package com.example.beautify
 //import com.google.maps.example.R
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.GoogleMap.OnMyLocationClickListener
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 
 
@@ -68,10 +70,15 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         // Add a marker in Sydney and move the camera
         addMarker("GaTech",33.775778305161886, -84.39633864568813)
 
+
         mMap.isMyLocationEnabled = true
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
+
+        camReBound(LatLng(33.7700064482008, -84.38588745227676))
+
     }
+
     override fun onMyLocationClick(location: Location) {
         Toast.makeText(this, "Current location:\n$location", Toast.LENGTH_LONG)
             .show()
@@ -85,13 +92,19 @@ class MapsActivity : AppCompatActivity(), OnMyLocationButtonClickListener,
         return false
     }
 
-    fun addMarker(name:String, lat:Double,log:Double) {
+    private fun addMarker(name:String, lat:Double, log:Double) {
         val ref = LatLng(lat, log)
         mMap.addMarker(MarkerOptions()
             .position(ref)
             .title("Marker in $name"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(ref))
     }
+    private fun camReBound(latLng : LatLng) {
+        val builder = LatLngBounds.builder()
+        val bounds = builder.include(latLng).build()
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds,300,300, 30))
+    }
+
 }
 
 
