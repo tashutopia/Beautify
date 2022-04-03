@@ -34,7 +34,10 @@
             app:layout_constraintStart_toStartOf="@+id/map"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.96"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:srcCompat="@drawable/shop_bag"
+            app:maxImageSize="56dp"
+            app:fabCustomSize="90dp"
+            />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -76,13 +79,15 @@
             android:layout_height="90dp"
             android:backgroundTint="@color/beau"
             android:clickable="true"
-            android:src="@drawable/camera_lens"
-            app:fabCustomSize="75dp"
+            app:srcCompat="@drawable/camera_lens"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/map"
             app:layout_constraintStart_toEndOf="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.96" />
+            app:layout_constraintVertical_bias="0.96"
+            app:maxImageSize="56dp"
+            app:fabCustomSize="90dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
