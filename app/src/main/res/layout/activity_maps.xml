@@ -87,7 +87,7 @@
             app:layout_constraintStart_toEndOf="@+id/linearLayout"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.96"
-            app:maxImageSize="56dp"
+            app:maxImageSize="65dp"
             app:fabCustomSize="90dp"
             />
 
@@ -98,13 +98,14 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="71dp"
+        android:layout_height="69dp"
         android:backgroundTint="@color/beau">
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
             android:src="@drawable/beautify2" />
 
     </com.google.android.material.appbar.AppBarLayout>
